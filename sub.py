@@ -271,7 +271,7 @@ class FourthModel(FirstModel):
             nn.Flatten(),
         )
         self.classifier = nn.Sequential(
-            nn.Linear(128 * 4 * 4, 1000),
+            nn.Linear(3*32*32,  1000),
             nn.BatchNorm1d(1000),
             
             nn.ReLU(),
