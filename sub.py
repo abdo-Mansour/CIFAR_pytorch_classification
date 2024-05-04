@@ -43,26 +43,37 @@ class FirstModel(nn.Module):
         self.recall = Recall(task= 'multiclass', num_classes=self.num_of_classes, average='macro').to(self.device)
         # Model Architecture
         self.feature_extract = nn.Sequential(
-            nn.Conv2d(3, 32, kernel_size=5, padding=2),
-            nn.BatchNorm2d(32),
-            nn.MaxPool2d(kernel_size=2),
-            
-            # nn.Dropout(0.2),
-
-            nn.Conv2d(32, 64, kernel_size=5, padding=2),
-            nn.BatchNorm2d(64),
-            nn.MaxPool2d(kernel_size=2),
-            
-            nn.Conv2d(64, 32, kernel_size=3, padding=1),
-            nn.BatchNorm2d(32),
+            nn.Conv2d(in_channels=3, out_channels=32, kernel_size=5, padding=2),
             nn.MaxPool2d(kernel_size=2),
 
-            nn.Flatten()
+            nn.Conv2d(in_channels = 32, out_channels = 64, kernel_size = 5, padding = 2),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size = 2),
+
+            nn.Conv2d(in_channels = 64, out_channels = 128, kernel_size = 5, padding = 2),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size = 2),
+            nn.Flatten(),
         )
         self.classifier = nn.Sequential(
-            nn.Linear(512, 128),
+            nn.Linear(128 * 4 * 4, 1000),
+            nn.BatchNorm1d(1000),
+            
             nn.ReLU(),
-            nn.Linear(128, self.num_of_classes),            
+            nn.Linear(1000, 1000),
+            nn.BatchNorm1d(1000),
+
+            nn.ReLU(),
+            nn.Linear(1000, 1000),
+            nn.BatchNorm1d(1000),
+
+            nn.ReLU(),
+            nn.Linear(1000, 1000),
+            nn.BatchNorm1d(1000),
+            
+            nn.ReLU(),
+            nn.Linear(1000, self.num_of_classes),
+            nn.BatchNorm1d(self.num_of_classes),
         )
         
     def forward(self, x):
@@ -257,16 +268,6 @@ class FourthModel(FirstModel):
     def __init__(self,num_classes,device,dim = 32):
         super().__init__(num_classes,device,dim)
         self.feature_extract = nn.Sequential(
-            nn.Conv2d(in_channels=3, out_channels=32, kernel_size=5, padding=2),
-            nn.MaxPool2d(kernel_size=2),
-
-            nn.Conv2d(in_channels = 32, out_channels = 64, kernel_size = 5, padding = 2),
-            nn.ReLU(),
-            nn.MaxPool2d(kernel_size = 2),
-
-            nn.Conv2d(in_channels = 64, out_channels = 128, kernel_size = 5, padding = 2),
-            nn.ReLU(),
-            nn.MaxPool2d(kernel_size = 2),
             nn.Flatten(),
         )
         self.classifier = nn.Sequential(
